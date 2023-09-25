@@ -43,7 +43,13 @@ WIP - This command currently does not work with the core APIs and will not gener
 
 ## Installation 
 
-Copy the Python file to a folder in your $PATH. For e.g.
+* Install pip dependencies 
+```bash
+pip install kubernetes
+pip install requests
+```
+
+* Copy the Python file to a folder in your $PATH. For e.g.
 ```bash
 sudo cp kubectl-gen-resource-yaml.py /usr/local/bin/kubectl-gen-resource-yaml
 sudo chmod +x /usr/local/bin/kubectl-gen-resource-yaml
