@@ -1,6 +1,6 @@
 # Generate Kubernetes Resource YAML 
 
-A handy kubectl plugin that performs a walkthrough of a resource schema of a third-party API registered with the Kubernetes API server. This plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments, etc. The result yields a sample YAML of the resource.
+A handy kubectl plugin that performs a walkthrough of a resource schema of a third-party API registered with the Kubernetes API server. This plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. The result yields a sample YAML of the resource.
 
 Example - 
 
@@ -51,7 +51,7 @@ sudo chmod +x /usr/local/bin/kubectl-gen-resource-yaml
 
 ## Usage
 
-To use the valid API version for a given resource, you can run the following command
+You can run the following command to use the valid API version for a given resource.
 
 ```bash
 kubectl api-resource|grep {{NAME_OF_RESOURCE}}
@@ -62,5 +62,5 @@ It should display the following columns -
 NAME                                SHORTNAMES       APIVERSION                                       NAMESPACED   KIND
 ```
  
- The `--api` command line argument uses the APIVERSION value, while the `--kind` commandline argument uses the KIND value
+ The `--api` command line argument uses the APIVERSION value, while the `--kind` command line argument uses the KIND value.
 
