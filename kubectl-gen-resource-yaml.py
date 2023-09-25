@@ -58,39 +58,31 @@ def traverse_spec_objects(x, n):
             elif x[key]["type"] == "array":
                 # An array of objects
                 if x[key]["items"]["type"] == "object":
+                    print(" " * n, key+":")
+                    print(" " * n, "- ")
+                    n +=2
                     if "properties" in x[key]["items"]:
-                        print(" " * n, key+":")
-                        print(" " * n, "- ")
-                        n +=2
                         traverse_spec_objects(x[key]["items"]["properties"], n)
-                        n -=2
                     else:
                     # Properties not found in object. Non standard api. Interate thru each key 
-                        print(" " * n, key+":")
-                        print(" " * n, "- ")
-                        n +=2
                         traverse_spec_objects(x[key]["items"], n)
-                        n -=2
+                    n -=2
                 else:
+                    print(" " * n, key+": ")
                     if "default" in x[key]:
-                        print(" " * n, key+": ")
                         print(" " * n, "- "+ x[key]["items"]["type"] + "# Default: "+str(x[key]["default"]))
                     else:
-                        print(" " * n, key+": ")
                         print(" " * n, "- "+ x[key]["items"]["type"])
             else:
                 # Type is object
+                print(" " * n, key+":")
+                n +=2
                 if "properties" in x[key]:
-                    print(" " * n, key+":")
-                    n +=2
                     traverse_spec_objects(x[key]["properties"], n)
-                    n -=2
                 else:
                 # Properties not found in object. Non standard api. Interate thru each key 
-                    print(" " * n, key+":")
-                    n +=2
                     traverse_spec_objects(x[key], n)
-                    n -=2
+                n -=2
 
 def main():
     k8s_host = ""
