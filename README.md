@@ -1,0 +1,1 @@
+# kubectl-gen-resource-yaml
