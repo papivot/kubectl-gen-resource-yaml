@@ -65,7 +65,7 @@ kubectl api-resource|grep {{NAME_OF_RESOURCE}}
 It should display the following columns -
 
 ```
-NAME                                SHORTNAMES       APIVERSION                                       NAMESPACED   KIND
+NAME    SHORTNAMES    APIVERSION    NAMESPACED    KIND
 ```
 
  The `--api` command line argument uses the APIVERSION value, while the `--kind` command line argument uses the KIND value.
