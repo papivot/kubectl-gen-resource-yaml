@@ -5,7 +5,7 @@ A handy kubectl plugin that performs a walkthrough of a resource schema of a thi
 Example - 
 
 ```bash
-kubectl kubectl-gen-resource-yaml --api run.tanzu.vmware.com/v1alpha3 --kind kappControllerConfig 
+kubectl genresourceyaml --api run.tanzu.vmware.com/v1alpha3 --kind kappControllerConfig 
 ```
 
 results in an output similar to this - 
@@ -51,8 +51,8 @@ pip install requests
 
 * Copy the Python file to a folder in your $PATH. For e.g.
 ```bash
-sudo cp kubectl-gen-resource-yaml.py /usr/local/bin/kubectl-gen-resource-yaml
-sudo chmod +x /usr/local/bin/kubectl-gen-resource-yaml
+sudo cp kubectl-genresourceyaml.py /usr/local/bin/kubectl-genresourceyaml
+sudo chmod +x /usr/local/bin/kubectl-genresourceyaml
 ```
 
 ## Usage
@@ -67,6 +67,11 @@ It should display the following columns -
 ```
 NAME                                SHORTNAMES       APIVERSION                                       NAMESPACED   KIND
 ```
- 
+
  The `--api` command line argument uses the APIVERSION value, while the `--kind` command line argument uses the KIND value.
 
+Execute the command using the following syntax - 
+```
+```bash
+kubectl genresourceyaml --api {{APIVERSION}} --kind {{KIND}}
+```
