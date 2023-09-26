@@ -1,6 +1,6 @@
 # Generate Kubernetes Resource YAML 
 
-A handy `kubectl plugin` that performs a walkthrough of a resource schema of a *third-party* API registered with the Kubernetes API server. The result yields a sample YAML of the resource as described in the example below.  
+A handy `kubectl plugin` that performs a walkthrough of a resource schema of a ***third-party*** API registered with the Kubernetes API server. The result yields a sample YAML of the resource as described in the example below.  
 
 Example - 
 
@@ -72,7 +72,7 @@ It should display the following columns -
 NAME    SHORTNAMES    APIVERSION    NAMESPACED    KIND
 ```
 
- The `--api` command line argument uses the *APIVERSION* value, while the `--kind` command line argument uses the *KIND* value. Note that *KIND* value may be different from the *NAME* value. 
+ The `--api` command line argument uses the *APIVERSION* value, while the `--kind` command line argument uses the ***KIND*** value. Note that ***KIND*** value may be different from the *NAME* value. 
 
 Execute the command using the following syntax - 
 ```
