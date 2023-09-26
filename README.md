@@ -1,6 +1,7 @@
 # Generate Kubernetes Resource YAML 
 
-A handy kubectl plugin that performs a walkthrough of a resource schema of a third-party API registered with the Kubernetes API server. The result yields a sample YAML of the resource. Since the core APIs generally follow a different specification, his plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. This plugin will not work for any APIs ending with `.k8s.io`.  
+A handy `kubectl plugin` that performs a walkthrough of a resource schema of a *third-party* API registered with the Kubernetes API server. The result yields a sample YAML of the resource as described in the example below. 
+Since the Kubernetes core APIs generally follow a different specification, this plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. This plugin will not work for any APIs ending with `.k8s.io`.  
 
 Example - 
 
