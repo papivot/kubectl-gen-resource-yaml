@@ -1,7 +1,6 @@
 # Generate Kubernetes Resource YAML 
 
-A handy `kubectl plugin` that performs a walkthrough of a resource schema of a *third-party* API registered with the Kubernetes API server. The result yields a sample YAML of the resource as described in the example below. 
-Since the Kubernetes core APIs generally follow a different specification, this plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. This plugin will not work for any APIs ending with `.k8s.io`. The specifications of these resources are well documented online. 
+A handy `kubectl plugin` that performs a walkthrough of a resource schema of a *third-party* API registered with the Kubernetes API server. The result yields a sample YAML of the resource as described in the example below.  
 
 Example - 
 
@@ -40,9 +39,13 @@ spec:
 
 ### Limitations - 
 
-WIP - This command currently does not work with the core APIs and will not generate outputs for APIS that end with `.k8s.io`, For e.g. resources like Pods and Deployments. 
+WIP - Since the Kubernetes core APIs generally follow a different specification, this plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. This plugin will not work for any APIs ending with `.k8s.io`. The specifications of these resources are well documented online.
 
 ## Installation 
+
+This plugin has been tested on Linux and MacOS-based systems and may need additional validation on the Windows environment. 
+
+Requirements - Python3 installed. 
 
 * Install pip dependencies 
 ```bash
@@ -69,7 +72,7 @@ It should display the following columns -
 NAME    SHORTNAMES    APIVERSION    NAMESPACED    KIND
 ```
 
- The `--api` command line argument uses the APIVERSION value, while the `--kind` command line argument uses the KIND value.
+ The `--api` command line argument uses the *APIVERSION* value, while the `--kind` command line argument uses the *KIND* value. Note that *KIND* value may be different from the *NAME* value. 
 
 Execute the command using the following syntax - 
 ```
