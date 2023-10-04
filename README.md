@@ -61,7 +61,7 @@ sudo chmod +x /usr/local/bin/kubectl-genresourceyaml
 
 ## Usage
 
-You can run the following command to use the valid API version for a given resource.
+You can run the following command to get a given resource's valid API version and other details.
 
 ```bash
 kubectl api-resource|grep {{NAME_OF_RESOURCE}}
@@ -72,10 +72,10 @@ It should display the following columns -
 NAME    SHORTNAMES    APIVERSION    NAMESPACED    KIND
 ```
 
- The `--api` command line argument uses the *APIVERSION* value, while the `--kind` command line argument uses the ***KIND*** value. Note that ***KIND*** value may be different from the *NAME* value. 
+ The `--api` command line argument uses the *APIVERSION* value, while the `--kind` command line argument uses the ***KIND*** value. Note that ***KIND*** value may differ from the *NAME* value. 
 
 Execute the command using the following syntax - 
-```
+
 ```bash
 kubectl genresourceyaml --api {{APIVERSION}} --kind {{KIND}}
 ```
