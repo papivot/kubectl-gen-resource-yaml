@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import os
+import argparse
 import urllib3
 import requests
-import argparse
-from kubernetes import client, config
+from kubernetes import config
 from kubernetes.client import configuration
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -14,17 +14,17 @@ parser.add_argument('--api', type=str, help='The APIVERSION in the following for
 parser.add_argument('--kind',  type=str, help='The KIND value of the object/resource whose schema needs to be generated in the YAML format. For reference, it is the KIND field in the kubectl api-resource command output')
 args = parser.parse_args()
 
-if not (args.kind):
+if not args.kind:
     print("error: the following arguments are required: kind")
     exit()
-if not (args.api):
+if not args.api:
     print("error: the following arguments are required: api")
     exit()
-
+ 
 apikind = args.kind
-apidetail = args.api.split('/')[0] 
-apiversion = args.api.split('/')[1] 
-  
+apidetail = args.api.split('/')[0]
+apiversion = args.api.split('/')[1]
+
 final_output = dict()
 
 def get_kubeapi_request(httpsession,path,header):
@@ -34,10 +34,10 @@ def get_kubeapi_request(httpsession,path,header):
         return response.json()
     else:
         return 0
-    
+   
 def traverse_spec_objects(x, n):
     for key in x:
-        if key not in ["description", "type"]:  
+        if key not in ["description", "type", "x-kubernetes-preserve-unknown-fields"]:
             if not x[key].get("type"):
                 print(" " * n,key+": <>")
             elif   x[key]["type"] == "boolean":
@@ -49,12 +49,12 @@ def traverse_spec_objects(x, n):
                 if "default" in x[key]:
                     print(" " * n, key+": <string> # Default: "+x[key]["default"])
                 else:
-                    print(" " * n, key+": <string>")  
+                    print(" " * n, key+": <string>")
             elif x[key]["type"] == "integer":
                 if "default" in x[key]:
                     print(" " * n, key+": <integer> # Default: "+str(x[key]["default"]))
                 else:
-                    print(" " * n, key+": <integer>")  
+                    print(" " * n, key+": <integer>")
             elif x[key]["type"] == "array":
                 # An array of objects
                 if x[key]["items"]["type"] == "object":
@@ -80,7 +80,7 @@ def traverse_spec_objects(x, n):
                 if "properties" in x[key]:
                     traverse_spec_objects(x[key]["properties"], n)
                 else:
-                # Properties not found in object. Non standard api. Interate thru each key 
+                # Properties not found in object. Non standard api. Interate thru each key
                     traverse_spec_objects(x[key], n)
                 n -=2
 
@@ -92,30 +92,33 @@ def main():
 
     if not os.environ.get('INCLUSTER_CONFIG'):
         config.load_kube_config()
-    else:  
-        config.load_incluster_config()    
+    else:
+        config.load_incluster_config()
 
     k8s_host = configuration.Configuration()._default.host
     k8s_token = configuration.Configuration()._default.api_key['authorization']
     k8s_headers = {"Accept": "application/json, */*", "Authorization": k8s_token}
     k8s_session = requests.session()
-   
+
     parts = apidetail.split(".")
     reversed_parts = ".".join(parts[::-1])
-
-    apis = get_kubeapi_request(k8s_session,k8s_host+"/openapi/v3/apis/"+apidetail+"/"+apiversion, k8s_headers) 
-    if (apis):
+    
+    apis = get_kubeapi_request(k8s_session,k8s_host+"/openapi/v3/apis/"+apidetail+"/"+apiversion, k8s_headers)
+    if apis:
         defjson = apis["components"]["schemas"].get(reversed_parts+"."+apiversion+"."+apikind)
-        if "spec" in defjson["properties"]:
-            final_output["spec"] = defjson["properties"]["spec"]["properties"]
-            print("apiVersion: "+apiversion)
-            print("kind: "+apikind)
-            print("metadata: ")
-            print("  name: <string>")
-            print("spec: ")
-            traverse_spec_objects(final_output["spec"], 1)
+        if not defjson:
+            print("error: Object"+apikind+" not found in "+apidetail+"/"+apiversion+". Exiting...")
         else:
-            print("Missing spec in API. Exiting...")
+            if "spec" in defjson["properties"]:
+                final_output["spec"] = defjson["properties"]["spec"]["properties"]
+                print("apiVersion: "+apiversion)
+                print("kind: "+apikind)
+                print("metadata: ")
+                print("  name: <string>")
+                print("spec: ")
+                traverse_spec_objects(final_output["spec"], 1)
+            else:
+                print("error: The request object does not have a spec section in the registered API. Exiting...")
 
 if __name__ == "__main__":
     main()
