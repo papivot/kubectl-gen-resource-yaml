@@ -64,7 +64,7 @@ sudo chmod +x /usr/local/bin/kubectl-genresourceyaml
 You can run the following command to get a given resource's valid API version and other details.
 
 ```bash
-kubectl api-resource|grep {{NAME_OF_RESOURCE}}
+kubectl api-resources|grep {{NAME_OF_RESOURCE}}
 ```
 It should display the following columns -
 
