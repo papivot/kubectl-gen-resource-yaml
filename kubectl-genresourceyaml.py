@@ -40,7 +40,7 @@ def traverse_spec_objects(x, n):
         if key not in ["description", "type", "x-kubernetes-preserve-unknown-fields"]:
             if not x[key].get("type"):
                 print(" " * n,key+": <>")
-            elif   x[key]["type"] == "boolean":
+            elif x[key]["type"] == "boolean":
                 if "default" in x[key]:
                     print(" " * n,key+": <boolean> # Default: "+str(x[key]["default"]))
                 else:
@@ -55,6 +55,11 @@ def traverse_spec_objects(x, n):
                     print(" " * n, key+": <integer> # Default: "+str(x[key]["default"]))
                 else:
                     print(" " * n, key+": <integer>")
+            elif x[key]["type"] == "number":
+                if "default" in x[key]:
+                    print(" " * n, key+": <number> # Default: "+str(x[key]["default"]))
+                else:
+                    print(" " * n, key+": <number>")
             elif x[key]["type"] == "array":
                 # An array of objects
                 if x[key]["items"]["type"] == "object":
@@ -107,18 +112,19 @@ def main():
     if apis:
         defjson = apis["components"]["schemas"].get(reversed_parts+"."+apiversion+"."+apikind)
         if not defjson:
-            print("error: Object"+apikind+" not found in "+apidetail+"/"+apiversion+". Exiting...")
+            print("error: Object " +apikind+" not found in "+apidetail+"/"+apiversion+". Exiting...")
         else:
             if "spec" in defjson["properties"]:
-                final_output["spec"] = defjson["properties"]["spec"]["properties"]
                 print("apiVersion: "+apiversion)
                 print("kind: "+apikind)
                 print("metadata: ")
                 print("  name: <string>")
                 print("spec: ")
-                traverse_spec_objects(final_output["spec"], 1)
+                if "properties" in defjson["properties"]["spec"]: 
+                    final_output["spec"] = defjson["properties"]["spec"]["properties"]
+                    traverse_spec_objects(final_output["spec"], 1)
             else:
-                print("error: The request object does not have a spec section in the registered API. Exiting...")
+                print("error: The requested object does not have a spec section in the registered API. Exiting...")
 
 if __name__ == "__main__":
     main()
