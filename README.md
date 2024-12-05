@@ -4,7 +4,7 @@ A handy `kubectl plugin` that performs a walkthrough of a resource schema of a *
 
 Example - 
 
-```bash
+```shell
 kubectl genresourceyaml --api run.tanzu.vmware.com/v1alpha3 --kind kappControllerConfig 
 ```
 
@@ -51,6 +51,8 @@ Requirements - Python3 installed.
 ```bash
 pip install kubernetes
 pip install requests
+# or
+sudo apt install python3-kubernetes
 ```
 
 * Copy the Python file to a folder in your $PATH. For e.g.
