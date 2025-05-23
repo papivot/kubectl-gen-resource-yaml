@@ -37,11 +37,37 @@ spec:
   namespace: <string> # Default: tkg-system
 ```
 
+### How it Works
+
+This plugin interacts with your Kubernetes cluster to provide information about Custom Resource Definitions (CRDs). It works by:
+1. Querying the Kubernetes API server for the OpenAPI v3 schema of the specified CRD. This schema defines the structure, data types, and validation rules for the custom resource.
+2. Traversing this retrieved schema. The script navigates through the different fields and their definitions.
+3. Generating a sample YAML output based on the schema structure. This output provides a template that you can adapt for creating actual resource instances.
+
+Default values specified in the CRD schema are indicated in the output YAML with a comment, for example: `# Default: <value>`.
+
 ### Limitations - 
 
-WIP - Since the Kubernetes core APIs generally follow a different specification, this plugin currently does not work with the core APIs and will not generate outputs for resources like Pods and Deployments. This plugin will not work for any APIs ending with `.k8s.io`. The specifications of these resources are well documented online.
+- **Core Kubernetes APIs**: This plugin is designed for third-party APIs (Custom Resources) and currently does not work with core Kubernetes APIs like Pods, Deployments, Services, etc. (typically those under `*.k8s.io` API groups).
+    - **Reasoning**: Core API schemas are often accessed via different API endpoints (e.g., `/openapi/v2` for some core components) or have a more complex structure than the `/openapi/v3/apis/{group}/{version}` path pattern primarily used for CRDs and aggregated APIs. Additionally, the schemas for core resources are extensive and are already well-documented in the official Kubernetes documentation, which is the recommended source for their specifications.
+- **Schema Variations**: While the plugin attempts to handle various CRD schema structures, some highly complex or non-standard schemas might not be rendered perfectly.
 
-## Installation 
+### Output Data Types
+
+The generated YAML uses placeholders to indicate the expected data type for each field. Here's how to interpret them:
+
+- `<string>`: Expects a string value.
+- `<integer>`: Expects an integer value.
+- `<boolean>`: Expects a boolean value (`true` or `false`).
+- `<number>`: Expects a numerical value (can be integer or float).
+- `key:` (followed by indented fields): Represents an `object` with nested key-value pairs.
+- `- <type>` or `- `: Represents an `array`.
+    - If the array items are simple types, it might look like `- <string>`.
+    - If the array items are objects, it will show `- ` followed by indented fields for that object.
+- `<no_type_specified>`: Indicates that the schema did not explicitly define a type for this field. You may need to consult the CRD's documentation.
+- `<unknown_type_in_schema>`: Indicates an unexpected or unrecognized type definition within the schema for this field.
+
+## Installation
 
 This plugin has been tested on Linux and MacOS-based systems and may need additional validation on the Windows environment. 
 
