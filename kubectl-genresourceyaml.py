@@ -36,58 +36,81 @@ def get_kubeapi_request(httpsession,path,header):
         return 0
    
 def traverse_spec_objects(x, n):
+    # Iterate through each key in the current schema object
     for key in x:
+        # Skip keys that are not relevant to the schema structure
         if key not in ["description", "type", "x-kubernetes-preserve-unknown-fields"]:
+            # Handle cases where the type is not defined in the schema
             if not x[key].get("type"):
-                print(" " * n,key+": <>")
+                print(" " * n,key+": <no_type_specified>")
+            # Handle boolean type
             elif x[key]["type"] == "boolean":
                 if "default" in x[key]:
                     print(" " * n,key+": <boolean> # Default: "+str(x[key]["default"]))
                 else:
                     print(" " * n,key+": <boolean>")
+            # Handle string type
             elif x[key]["type"] == "string":
                 if "default" in x[key]:
                     print(" " * n, key+": <string> # Default: "+x[key]["default"])
                 else:
                     print(" " * n, key+": <string>")
+            # Handle integer type
             elif x[key]["type"] == "integer":
                 if "default" in x[key]:
                     print(" " * n, key+": <integer> # Default: "+str(x[key]["default"]))
                 else:
                     print(" " * n, key+": <integer>")
+            # Handle number type
             elif x[key]["type"] == "number":
                 if "default" in x[key]:
                     print(" " * n, key+": <number> # Default: "+str(x[key]["default"]))
                 else:
                     print(" " * n, key+": <number>")
+            # Handle array type
             elif x[key]["type"] == "array":
-                # An array of objects
-                if x[key]["items"]["type"] == "object":
+                # Check if the array contains objects
+                if x[key]["items"].get("type") == "object":
                     print(" " * n, key+":")
                     print(" " * n, "- ")
+                    # Increase indentation for nested elements
                     n +=2
+                    # Recursively call traverse_spec_objects for the items in the array
                     if "properties" in x[key]["items"]:
                         traverse_spec_objects(x[key]["items"]["properties"], n)
                     else:
-                    # Properties not found in object. Non standard api. Interate thru each key 
+                        # Properties not found in object. Non standard api. Iterate thru each key 
                         traverse_spec_objects(x[key]["items"], n)
+                    # Decrease indentation after processing nested elements
                     n -=2
+                # Handle arrays of other types (e.g. string, integer)
                 else:
                     print(" " * n, key+": ")
                     if "default" in x[key]:
-                        print(" " * n, "- "+ x[key]["items"]["type"] + "# Default: "+str(x[key]["default"]))
+                        # Ensure default is a list for arrays if specified
+                        default_value = x[key]["default"]
+                        if isinstance(default_value, list):
+                            print(" " * n, "- "+ x[key]["items"].get("type", "<unknown_type_in_schema>") + " # Default: "+str(default_value))
+                        else:
+                             print(" " * n, "- "+ x[key]["items"].get("type", "<unknown_type_in_schema>") + " # Default: ["+str(default_value)+"]")
                     else:
-                        print(" " * n, "- "+ x[key]["items"]["type"])
-            else:
-                # Type is object
+                        print(" " * n, "- "+ x[key]["items"].get("type", "<unknown_type_in_schema>"))
+            # Explicitly handle object type
+            elif x[key]["type"] == "object":
                 print(" " * n, key+":")
+                # Increase indentation for nested elements
                 n +=2
+                # Recursively call traverse_spec_objects for the properties of the object
                 if "properties" in x[key]:
                     traverse_spec_objects(x[key]["properties"], n)
                 else:
-                # Properties not found in object. Non standard api. Interate thru each key
+                    # Properties not found in object. Non standard api. Iterate thru each key
                     traverse_spec_objects(x[key], n)
+                 # Decrease indentation after processing nested elements
                 n -=2
+            # Handle any other types not explicitly covered (though ideally all should be)
+            else:
+                print(" " * n, key+": <unknown_type_in_schema>")
 
 def main():
     k8s_host = ""
